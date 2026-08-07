@@ -22,6 +22,17 @@ All notable changes to this project are documented here. The format follows
   the button is added client-side and hidden where the browser doesn't allow
   element fullscreen (e.g. iOS Safari), so the SSR fallback is unchanged.
 
+### Security
+- Cleared every open Dependabot advisory in both dependency trees. On the
+  Composer side, `squizlabs/php_codesniffer` moves to 3.13.6 (CVE-2026-67434,
+  command injection in the gitblame report) and `wp-coding-standards/wpcs` to
+  3.4.1 (CVE-2026-45293, arbitrary code execution). On the npm side, the
+  in-range advisories are picked up by a lockfile refresh, and the transitive
+  packages `@wordpress/scripts` still pins to vulnerable versions are patched
+  through `overrides` in `package.json`. All of these are build/test tooling —
+  no runtime plugin code changed, and the shipped `build/` output is byte-for-byte
+  identical.
+
 ## [0.4.0] - 2026-07-06
 
 Phase 4 — post/blog bridge (one-way WP → Terraviz discovery).
