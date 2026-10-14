@@ -35,7 +35,7 @@
 		"visual-report": "node tests/e2e/visual-report.js"
 	},
 	"devDependencies": {
-		"@wordpress/env": "^10.0.0",
+		"@wordpress/env": "^11.17.0",
 		"@wordpress/scripts": "^30.0.0",
 		"pixelmatch": "^5.3.0",
 		"pngjs": "^7.0.0"
@@ -43,12 +43,13 @@
 	"dependencies": {
 		"easymde": "^2.21.0"
 	},
-	"comment:overrides": "Security patches for transitive dev-only dependencies that @wordpress/scripts and @wordpress/env still pin to vulnerable ranges. All are build/test tooling; none ship in the plugin ZIP. Drop an entry once upstream bumps it.",
+	"comment:overrides": "Security patches for transitive dev-only dependencies that @wordpress/scripts and @wordpress/env still pin to vulnerable ranges. All are build/test tooling; none ship in the plugin ZIP. Drop an entry once upstream bumps it. The exception is \"@wordpress/env\": \"$@wordpress/env\", which points @wordpress/scripts 30's optional peer (^10) at the root's wp-env 11 so `npm ci` resolves; drop it if wp-scripts moves to 32+, which accepts >=10.",
 	"overrides": {
 		"@babel/core": "^7.29.7",
 		"@opentelemetry/core": "^2.10.0",
 		"@sentry/node": "^10.54.0",
 		"@simple-git/argv-parser": "^2.0.1",
+		"@wordpress/env": "$@wordpress/env",
 		"adm-zip": "^0.6.1",
 		"basic-ftp": "^6.2.3",
 		"body-parser": "^1.20.6",

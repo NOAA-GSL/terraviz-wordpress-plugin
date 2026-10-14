@@ -39,6 +39,11 @@ on:
       - 'tests/e2e/**'
       - 'playwright.config.js'
       - '.github/workflows/screenshots.yml'
+      # Dependency and environment changes (Playwright, wp-env, the WordPress
+      # container) can break the capture or move the baselines just as code can.
+      - 'package.json'
+      - 'package-lock.json'
+      - '.wp-env.json'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
