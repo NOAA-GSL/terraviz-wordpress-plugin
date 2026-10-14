@@ -43,17 +43,22 @@
 	"dependencies": {
 		"easymde": "^2.21.0"
 	},
-	"comment:overrides": "Security patches for transitive dev-only dependencies that @wordpress/scripts still pins to vulnerable ranges. All are build/test tooling; none ship in the plugin ZIP. Drop an entry once wp-scripts bumps it upstream.",
+	"comment:overrides": "Security patches for transitive dev-only dependencies that @wordpress/scripts and @wordpress/env still pin to vulnerable ranges. All are build/test tooling; none ship in the plugin ZIP. Drop an entry once upstream bumps it.",
 	"overrides": {
 		"@babel/core": "^7.29.7",
 		"@opentelemetry/core": "^2.10.0",
-		"adm-zip": "^0.6.0",
+		"@sentry/node": "^10.54.0",
+		"@simple-git/argv-parser": "^2.0.1",
+		"adm-zip": "^0.6.1",
+		"basic-ftp": "^6.2.3",
 		"body-parser": "^1.20.6",
-		"brace-expansion@2": "^2.1.4",
+		"brace-expansion@2": "^2.1.7",
 		"linkify-it": "^5.0.2",
-		"markdown-it": "^14.3.0",
+		"markdown-it": "^14.3.1",
 		"minimatch@3": "^3.1.5",
 		"minimatch@9": "^9.0.9",
+		"postcss-selector-parser": "^7.1.6",
+		"qs": "^6.16.0",
 		"serialize-javascript": "^7.0.7",
 		"uuid": "^11.1.1",
 		"webpack-dev-server": "^5.2.6"

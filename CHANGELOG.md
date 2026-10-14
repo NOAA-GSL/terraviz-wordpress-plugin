@@ -32,6 +32,17 @@ All notable changes to this project are documented here. The format follows
   through `overrides` in `package.json`. All of these are build/test tooling —
   no runtime plugin code changed, and the shipped `build/` output is byte-for-byte
   identical.
+- Patched the next round of npm Dependabot advisories (48 of 52 open alerts),
+  including the two critical ones in `shell-quote` and `proxy-addr`, plus
+  `axios`, `fast-uri`, `adm-zip`, `joi`, `ip-address`, `svgo`, `js-yaml`,
+  `brace-expansion`, `browserslist`, `compression`, `http-cache-semantics`,
+  `source-map-js`, `markdown-it`, `postcss-selector-parser`, and the
+  `@opentelemetry/instrumentation-*` family. In-range packages get a targeted
+  lockfile update; the rest are new or raised `overrides`. As before, it's all
+  build/test tooling and the shipped `build/` output is byte-for-byte
+  identical. Four alerts have no compatible upstream fix yet: `extract-zip` (no
+  patched release), `sprintf-js` (no patched release), and `simple-git`
+  (fixed only in v4, which `@wordpress/env` doesn't support yet).
 
 ## [0.4.0] - 2026-07-06
 
