@@ -135,10 +135,17 @@ final class Settings {
 	/**
 	 * Register the publishing settings: the capability map and the service-token
 	 * slot. Only wired for users who hold the plugin's `manage_terraviz`
-	 * capability, so the credential UI never renders for a lesser admin.
+	 * capability, so the credential UI never renders for a lesser admin. Anyone
+	 * else gets the section header with a notice explaining why it is empty.
 	 */
 	private function register_publishing(): void {
 		if ( ! current_user_can( Capabilities::MANAGE ) ) {
+			add_settings_section(
+				'terraviz_publishing',
+				__( 'Publishing', 'terraviz' ),
+				array( $this, 'render_publishing_locked' ),
+				self::PAGE
+			);
 			return;
 		}
 
@@ -177,6 +184,41 @@ final class Settings {
 			self::PAGE,
 			'terraviz_publishing'
 		);
+	}
+
+	/**
+	 * The Publishing section for a user who can open this screen
+	 * (`manage_options`) but lacks `manage_terraviz`. Without it the service
+	 * token fields silently vanish, which reads as a missing feature rather
+	 * than a permission. Names the capability and how to obtain it.
+	 */
+	public function render_publishing_locked(): void {
+		$user = wp_get_current_user();
+
+		echo '<div class="notice notice-info inline">';
+
+		echo '<p>' . wp_kses_post( __( 'Publishing settings — the Terraviz service token (Client ID and Client Secret) and who may publish — are only shown to users with the <strong>Manage Terraviz</strong> capability (<code>manage_terraviz</code>). Your account does not have it, so they are hidden. Embedding needs no token.', 'terraviz' ) ) . '</p>';
+
+		if ( in_array( 'administrator', (array) $user->roles, true ) ) {
+			echo '<p>' . esc_html__( 'Your account is an administrator but is missing this capability. The plugin grants it to administrators when it is activated, so this usually means the plugin was switched on without running its activation step. Deactivate and reactivate the Terraviz plugin to restore it.', 'terraviz' ) . '</p>';
+		} else {
+			echo '<p>' . esc_html__( 'The plugin gives this capability to the Administrator role when it is activated. To set up publishing, ask a site administrator to do one of these:', 'terraviz' ) . '</p>';
+			echo '<ul style="list-style:disc;margin-left:1.5em;">';
+			echo '<li>' . esc_html__( 'Enter the service token on this screen themselves.', 'terraviz' ) . '</li>';
+			printf(
+				'<li>%s</li>',
+				wp_kses_post(
+					sprintf(
+						/* translators: %s: a WP-CLI command, e.g. `wp user add-cap 7 manage_terraviz`. */
+						__( 'Grant your user account the capability, using a role-editor plugin such as User Role Editor, or with WP-CLI: %s', 'terraviz' ),
+						'<code>wp user add-cap ' . (int) $user->ID . ' manage_terraviz</code>'
+					)
+				)
+			);
+			echo '</ul>';
+		}//end if
+
+		echo '</div>';
 	}
 
 	/**
