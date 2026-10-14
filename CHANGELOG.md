@@ -21,7 +21,9 @@ All notable changes to this project are documented here. The format follows
   `archive.debian.org`. `.wp-env.json` now pins `"port": 8888`, because wp-env 11
   would otherwise fall back to a random port when 8888 is busy, and Playwright,
   the E2E setup and the README all expect 8888. The workflow now also runs on
-  changes to `package.json`, `package-lock.json` and `.wp-env.json`.
+  changes to `package.json`, `package-lock.json` and `.wp-env.json`. The
+  publisher-dashboard baseline (and WordPress.org listing image 6) is refreshed
+  for the restyled notices in WordPress 7.1, which the E2E site now runs.
 
 ### Added
 - Fullscreen toggle on the interactive globe embeds. Once a globe loads, a
