@@ -14,6 +14,14 @@ All notable changes to this project are documented here. The format follows
   regardless of the choice. The renderer now emits `data-terraviz-mode="eager"`
   and the frontend boots the iframe immediately for it. The click-to-load
   poster still takes precedence when enabled.
+- The screenshot / visual-regression workflow starts WordPress again.
+  `wp-env start` was failing to build the PHP 7.4 image because Debian 11
+  (bullseye) reached end-of-life and its security packages left the regular
+  mirrors. `@wordpress/env` moves from 10 to 11.17, which points those images at
+  `archive.debian.org`. `.wp-env.json` now pins `"port": 8888`, because wp-env 11
+  would otherwise fall back to a random port when 8888 is busy, and Playwright,
+  the E2E setup and the README all expect 8888. The workflow now also runs on
+  changes to `package.json`, `package-lock.json` and `.wp-env.json`.
 
 ### Added
 - Fullscreen toggle on the interactive globe embeds. Once a globe loads, a
