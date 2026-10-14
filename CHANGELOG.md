@@ -36,7 +36,10 @@ All notable changes to this project are documented here. The format follows
   plugin's `manage_terraviz` capability previously saw the service-token
   (Client ID / Client Secret) fields silently missing; they now get a notice
   naming the capability and how an administrator can grant it — or, for an
-  administrator missing it, to deactivate and reactivate the plugin.
+  administrator missing it, to deactivate and reactivate the plugin. When the
+  capability is explicitly denied on the user account (which outranks any role
+  grant, so reactivation can't help), the notice says so and gives the
+  `wp user remove-cap` command that lifts the denial instead.
 
 ### Security
 - Cleared every open Dependabot advisory in both dependency trees. On the

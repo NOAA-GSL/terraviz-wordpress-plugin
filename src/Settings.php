@@ -199,7 +199,22 @@ final class Settings {
 
 		echo '<p>' . wp_kses_post( __( 'Publishing settings — the Terraviz service token (Client ID and Client Secret) and who may publish — are only shown to users with the <strong>Manage Terraviz</strong> capability (<code>manage_terraviz</code>). Your account does not have it, so they are hidden. Embedding needs no token.', 'terraviz' ) ) . '</p>';
 
-		if ( in_array( 'administrator', (array) $user->roles, true ) ) {
+		// A per-user `false` outranks any role grant, so neither reactivation
+		// (which only touches the administrator role) nor a role edit lifts it.
+		$denied = array_key_exists( Capabilities::MANAGE, $user->caps ) && ! $user->caps[ Capabilities::MANAGE ];
+
+		if ( $denied ) {
+			printf(
+				'<p>%s</p>',
+				wp_kses_post(
+					sprintf(
+						/* translators: %s: a WP-CLI command, e.g. `wp user remove-cap 7 manage_terraviz`. */
+						__( 'The capability is explicitly denied on your user account, usually by a role-editor plugin. That overrides any role grant, so reactivating the plugin will not restore it. An administrator can remove the denial with the tool that set it, or with WP-CLI: %s', 'terraviz' ),
+						'<code>wp user remove-cap ' . (int) $user->ID . ' manage_terraviz</code>'
+					)
+				)
+			);
+		} elseif ( in_array( 'administrator', (array) $user->roles, true ) ) {
 			echo '<p>' . esc_html__( 'Your account is an administrator but is missing this capability. The plugin grants it to administrators when it is activated, so this usually means the plugin was switched on without running its activation step. Deactivate and reactivate the Terraviz plugin to restore it.', 'terraviz' ) . '</p>';
 		} else {
 			echo '<p>' . esc_html__( 'The plugin gives this capability to the Administrator role when it is activated. To set up publishing, ask a site administrator to do one of these:', 'terraviz' ) . '</p>';

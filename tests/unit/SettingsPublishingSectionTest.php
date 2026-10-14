@@ -56,19 +56,48 @@ class SettingsPublishingSectionTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * An administrator missing the capability (e.g. the activation hook never
-	 * ran) is told how to restore it, not to ask an administrator.
+	 * An administrator whose role lacks the capability (the activation hook
+	 * never ran) is told to reactivate the plugin, which re-grants it to the
+	 * role — not to ask an administrator.
 	 */
-	public function test_administrator_missing_capability_is_told_to_reactivate(): void {
+	public function test_administrator_role_without_capability_is_told_to_reactivate(): void {
+		$role = get_role( 'administrator' );
+		$had  = $role->has_cap( Capabilities::MANAGE );
+		$role->remove_cap( Capabilities::MANAGE );
+
+		try {
+			wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+
+			$html = $this->render_sections();
+		} finally {
+			// Role caps live in a global WP_Roles that outlives the test's DB
+			// rollback; put back whatever the role held.
+			if ( $had ) {
+				$role->add_cap( Capabilities::MANAGE );
+			}
+		}
+
+		$this->assertStringContainsString( 'Deactivate and reactivate', $html );
+		$this->assertStringNotContainsString( 'wp user add-cap', $html );
+		$this->assertStringNotContainsString( 'wp user remove-cap', $html );
+		$this->assertStringNotContainsString( Credential::OPTION . '[client_id]', $html );
+	}
+
+	/**
+	 * A per-user denial outranks any role grant, so reactivation can't lift it.
+	 * The notice says so and gives the command that removes the denial.
+	 */
+	public function test_per_user_denial_is_told_to_remove_it_not_reactivate(): void {
+		Capabilities::grant();
 		$user_id = self::factory()->user->create( array( 'role' => 'administrator' ) );
-		// A per-user false overrides whatever the administrator role holds.
 		get_userdata( $user_id )->add_cap( Capabilities::MANAGE, false );
 		wp_set_current_user( $user_id );
 
 		$html = $this->render_sections();
 
-		$this->assertStringContainsString( 'Deactivate and reactivate', $html );
-		$this->assertStringNotContainsString( 'wp user add-cap', $html );
+		$this->assertStringContainsString( 'explicitly denied', $html );
+		$this->assertStringContainsString( 'wp user remove-cap ' . $user_id . ' manage_terraviz', $html );
+		$this->assertStringNotContainsString( 'Deactivate and reactivate', $html );
 		$this->assertStringNotContainsString( Credential::OPTION . '[client_id]', $html );
 	}
 
